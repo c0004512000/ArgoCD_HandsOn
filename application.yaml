@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-application-handson
+  namespace: argocd
+spec:
+  # Every application belogs to a single project,
+  # If unspecified, an application belongs to the "default" project
+  project: default
+
+  # The Git repo that ArgoCD keep tack on``
+  source:
+    # Git reop URL
+    repoURL: https://github.com/c0004512000/ArgoCD_HandsOn.git
+    
+    # Always aiming to the latest commit in the Git repo
+    targetRevision: HEAD
+
+    # The specific dir u wanna track in the source
+    path: dev
+  
+  # Targeting K8S cluster
+  destination: 
+    # The endpoint of the K8S API server.
+    # Since the ArgoCD is running INSIDE the k8s, which the destination cluster is also where ArgoCD is deployed,
+    # we can directly type in the INTERNAL FQDN of the K8S API server  
+    server: https://kubernetes.default.svc  # internal service name of the K8S API server
+    namespace: handson
+
+  syncPolicy:
+    syncOptions:
+    # Automatically create the ns if it doesn't exit
+    - CreateNamespace=true
+
+    # Enable the automation. 
+    # ArgoCD will sync the changes every 3 minutes by default
+    automated:
+      # automatically sync the git repo to K8S cluster --> Single source of truth
+      selfHeal: true
+
+      # if the source yaml file is deleted, the destination manifest will be automatically deleted as well
+      prune: true
