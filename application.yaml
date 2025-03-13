@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-application-handson
+  name: argocd-application-handson
   namespace: argocd
 spec:
   # Every application belogs to a single project,
